@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Model files (too large for git)
+*.ckpt
+*.pth
+*.pt
+*.bin
+*.safetensors
+*.onnx
+
+# Audio files (generated/test files)
+*.wav
+*.mp3
+*.m4a
+*.flac
+*.ogg
+
+# Exception: Keep original recording
+!recording_converted.wav
+!exact_text_expressive.wav
+
+# Data files
+*.json
+!package.json
+!tsconfig.json
+!my_voice_aligned.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temp files
+tmp/
+temp/
+.tmp/
+
+# Cache
+.cache/
+*.cache
+
+# Build outputs
+dist/
+build/
+*.egg-info/

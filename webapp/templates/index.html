@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tawk - Voice Cloning Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Nigerian flag colors */
+        .ng-green { background-color: #008751; }
+        .ng-green-light { background-color: #10B981; }
+        .ng-green-hover { background-color: #059669; }
+        
+        /* Gradient backgrounds */
+        .gradient-bg {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .card-shadow-lg {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        /* Custom animations */
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .pulse-slow {
+            animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        /* Audio waveform effect */
+        .waveform {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 40px;
+        }
+        
+        .waveform-bar {
+            width: 4px;
+            background: linear-gradient(to top, #008751, #10B981);
+            border-radius: 2px;
+            animation: wave 1s ease-in-out infinite;
+        }
+        
+        @keyframes wave {
+            0%, 100% { height: 20%; }
+            50% { height: 100%; }
+        }
+        
+        .waveform-bar:nth-child(2) { animation-delay: 0.1s; }
+        .waveform-bar:nth-child(3) { animation-delay: 0.2s; }
+        .waveform-bar:nth-child(4) { animation-delay: 0.3s; }
+        .waveform-bar:nth-child(5) { animation-delay: 0.4s; }
+        .waveform-bar:nth-child(6) { animation-delay: 0.5s; }
+        .waveform-bar:nth-child(7) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Header with Nigerian Flag -->
+    <header class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <!-- Nigerian Flag -->
+                    <div class="flex h-12 w-16 rounded shadow-md overflow-hidden">
+                        <div class="ng-green w-1/2"></div>
+                        <div class="bg-white w-1/2"></div>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Tawk</h1>
+                        <p class="text-sm text-gray-500">Nigerian Voice Cloning Dashboard</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="waveform">
+                        <div class="waveform-bar"></div>
+                        <div class="waveform-bar"></div>
+                        <div class="waveform-bar"></div>
+                        <div class="waveform-bar"></div>
+                        <div class="waveform-bar"></div>
+                        <div class="waveform-bar"></div>
+                        <div class="waveform-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Info Banner -->
+        <div class="mb-8 bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-green-800">
+                        <span class="font-semibold">Powered by YarnGPT:</span> Advanced Nigerian-accented voice synthesis technology
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Original Recording Card -->
+            <div class="bg-white rounded-xl card-shadow-lg p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">Original Recording</h2>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                        Source
+                    </span>
+                </div>
+                
+                <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <p class="text-sm text-gray-500 mb-2">Transcript:</p>
+                    <p class="text-gray-800 leading-relaxed">{{ original_text }}</p>
+                </div>
+
+                <div class="space-y-4">
+                    <audio id="originalAudio" controls class="w-full">
+                        <source src="/audio/original" type="audio/wav">
+                    </audio>
+                    
+                    <div class="flex items-center justify-between text-sm text-gray-600">
+                        <span>🎤 My Voice Sample</span>
+                        <span id="originalDuration">--:--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Synthesis Card -->
+            <div class="bg-white rounded-xl card-shadow-lg p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">Clone Your Voice</h2>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                        AI Generated
+                    </span>
+                </div>
+
+                <form id="synthesisForm" class="space-y-6">
+                    <div>
+                        <label for="textInput" class="block text-sm font-medium text-gray-700 mb-2">
+                            Enter text to synthesize:
+                        </label>
+                        <textarea 
+                            id="textInput" 
+                            name="text"
+                            rows="4" 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                            placeholder="Type what you want me to say...">{{ original_text }}</textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Quality Preset:
+                        </label>
+                        <select 
+                            id="qualitySelect" 
+                            name="quality"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                            <option value="high">High (More Stable)</option>
+                            <option value="balanced">Balanced</option>
+                            <option value="expressive" selected>Expressive (Recommended)</option>
+                        </select>
+                    </div>
+
+                    <button 
+                        type="submit"
+                        class="w-full ng-green hover:ng-green-hover text-white font-semibold py-4 rounded-lg transition duration-200 flex items-center justify-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                        </svg>
+                        <span id="buttonText">Generate Cloned Speech</span>
+                    </button>
+                </form>
+
+                <!-- Generated Audio Section -->
+                <div id="generatedSection" class="mt-6 hidden">
+                    <div class="border-t border-gray-200 pt-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Generated Audio</h3>
+                        <audio id="generatedAudio" controls class="w-full mb-4">
+                            <source id="generatedSource" type="audio/wav">
+                        </audio>
+                        <div class="flex items-center justify-between text-sm text-gray-600">
+                            <span>🔊 Cloned Voice</span>
+                            <span id="generatedDuration">--:--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loadingSection" class="mt-6 hidden">
+                    <div class="flex items-center justify-center space-x-3 text-gray-600">
+                        <svg class="animate-spin h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="text-sm font-medium">Generating your cloned voice...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-lg card-shadow p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-green-100 rounded-lg p-3">
+                        <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">Voice Clone</p>
+                        <p class="text-2xl font-semibold text-gray-900">Active</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg card-shadow p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-blue-100 rounded-lg p-3">
+                        <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">Model</p>
+                        <p class="text-2xl font-semibold text-gray-900">YarnGPT</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg card-shadow p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-purple-100 rounded-lg p-3">
+                        <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-500">Accent</p>
+                        <p class="text-2xl font-semibold text-gray-900">Nigerian</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-12">
+        <div class="border-t border-gray-200 pt-8 text-center text-gray-500 text-sm">
+            <p>🇳🇬 Tawk Voice Cloning Dashboard • Powered by YarnGPT & Whisper</p>
+            <p class="mt-2">Built with FastAPI + Tailwind CSS</p>
+        </div>
+    </footer>
+
+    <script>
+        // Format duration helper
+        function formatDuration(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Update original audio duration
+        const originalAudio = document.getElementById('originalAudio');
+        originalAudio.addEventListener('loadedmetadata', () => {
+            document.getElementById('originalDuration').textContent = formatDuration(originalAudio.duration);
+        });
+
+        // Handle form submission
+        const form = document.getElementById('synthesisForm');
+        const loadingSection = document.getElementById('loadingSection');
+        const generatedSection = document.getElementById('generatedSection');
+        const buttonText = document.getElementById('buttonText');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const text = document.getElementById('textInput').value;
+            const quality = document.getElementById('qualitySelect').value;
+
+            if (!text.trim()) {
+                alert('Please enter some text to synthesize');
+                return;
+            }
+
+            // Show loading state
+            loadingSection.classList.remove('hidden');
+            generatedSection.classList.add('hidden');
+            buttonText.textContent = 'Generating...';
+
+            try {
+                const response = await fetch('/api/synthesize', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text, quality })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Synthesis failed');
+                }
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                
+                // Update audio player
+                const generatedAudio = document.getElementById('generatedAudio');
+                const generatedSource = document.getElementById('generatedSource');
+                generatedSource.src = url;
+                generatedAudio.load();
+
+                // Update duration when loaded
+                generatedAudio.addEventListener('loadedmetadata', () => {
+                    document.getElementById('generatedDuration').textContent = formatDuration(generatedAudio.duration);
+                });
+
+                // Show generated section
+                loadingSection.classList.add('hidden');
+                generatedSection.classList.remove('hidden');
+                buttonText.textContent = 'Generate Cloned Speech';
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to generate speech. Please try again.');
+                loadingSection.classList.add('hidden');
+                buttonText.textContent = 'Generate Cloned Speech';
+            }
+        });
+    </script>
+</body>
+</html>
